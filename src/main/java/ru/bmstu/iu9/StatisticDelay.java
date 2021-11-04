@@ -8,6 +8,7 @@ public class StatisticDelay  implements Serializable {
     private int countCancelledFlights;
     private int countDelayedFlights;
     private float maxDelayed;
+    private static final float FLOAT_HUNDRED = 100.0f;
 
     public StatisticDelay(){}
 
@@ -52,7 +53,48 @@ public class StatisticDelay  implements Serializable {
         this.maxDelayed = maxDelayed;
     }
 
-    public static addStatistic(StatisticDelay )
+    public static StatisticDelay addStatistic(StatisticDelay object1,
+                                              StatisticDelay object2){
+        return new StatisticDelay(
+                object1.getCountAllFlights() + object2.getCountAllFlights(),
+                object1.getCountCancelledFlights() + object2.getCountCancelledFlights(),
+                object1.getCountDelayedFlights() + object2.getCountDelayedFlights(),
+                object1.getMaxDelayed() + object2.getMaxDelayed()
+                );
+
+    }
+
+    public static StatisticDelay addInStaticDelay(StatisticDelay object,
+                                                  boolean cancelled, boolean delayed, float delayTime){
+        int newCountFlights = object.getCountAllFlights() + 1;
+        int newCountCancelledFLights = object.getCountCancelledFlights();
+        int newCountDelayedFlights = object.getCountDelayedFlights();
+        float newMaxDelayed;
+
+        if(cancelled){
+            newCountCancelledFLights++;
+        }
+
+        if(delayed){
+            newCountDelayedFlights++;
+        }
+
+        if(delayTime > object.getMaxDelayed()){
+            newMaxDelayed = delayTime;
+        } else {
+            newMaxDelayed = object.getMaxDelayed();
+        }
+
+        return new StatisticDelay(newCountFlights, newCountCancelledFLights,
+                newCountDelayedFlights, newMaxDelayed);
+    }
+
+    public static String outputString(StatisticDelay object){
+        float delayedPercent = (float) object.countDelayedFlights /
+                (float) object.countAllFlights * FLOAT_HUNDRED;
+        float cancelledPercent = (float) object.countCancelledFlights /
+                (float) object.countAllFlights * FLOAT_HUNDRED;
+    }
 
     @Override
     public String toString() {
