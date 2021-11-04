@@ -1,4 +1,10 @@
 package ru.bmstu.iu9;
 
-public class StatisticDelay {
+import java.io.Serializable;
+
+public class StatisticDelay  implements Serializable {
+
+    private int countAllFlights;
+    private int countCancelledFlights;
+    private 
 }
