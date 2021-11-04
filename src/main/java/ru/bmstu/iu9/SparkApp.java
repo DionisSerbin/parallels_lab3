@@ -11,26 +11,35 @@ import java.util.Map;
 
 public class SparkApp {
 
-    private static final String CODE = "Code";
+    private static final String CODE_STR = "Code";
+    private static final String YEAR_STR = "YEAR";
     private static final String QUOTE = "\"";
     private static final String NULL_STR = "";
     private static final String COMMA = ",";
+    private static final String AIRPORTS_FILE = "L_AIRPORT_ID.csv";
+    private static final String FLIGHTS_FILE = "664600583_T_ONTIME_sample.csv";
+    private static final int COLUMN_NUMBER_AIRPORT_ID_FROM = 11;
+    private static final int COLUMN_NUMBER_AIRPORT_ID_TO = 14;
+    private static final int COLUMN_DELAY_TIME = 18;
+    private static final int COLUMN_NUMBER_CANCALLED = 19;
+    private static final float FLOAT_ZERO = 0.0f;
+    private static final float FLOAT_ONE = 1.0f;
 
     public static void main(String[] args){
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
         JavaRDD<String> flightsFile = sc.
-                textFile("664600583_T_ONTIME_sample.csv");
+                textFile(FLIGHTS_FILE);
 
         JavaRDD<String> airportsFile = sc.
-                textFile("L_AIRPORT_ID.csv");
+                textFile(AIRPORTS_FILE);
 
         JavaPairRDD<
                 Integer,
                 String
                 > dataAirport = airportsFile.
-                filter(s -> !s.contains(CODE)).
+                filter(s -> !s.contains(CODE_STR)).
                 mapToPair(s -> {
                             s = s.replace(QUOTE, NULL_STR);
                             int firstCommaIndex = s.indexOf(COMMA);
@@ -52,6 +61,44 @@ public class SparkApp {
                                 dataAirport.collectAsMap()
         );
 
-        JavaPairRDD<>
+        JavaPairRDD<
+                Tuple2<
+                        Integer,
+                        Integer
+                        >,
+                FlightsSerializable
+                > dataFlights = flightsFile.
+                filter(s -> !s.contains(YEAR_STR)).
+                mapToPair(s -> {
+                            String[] columns = s.split(COMMA);
+                            int airportIDFrom = Integer.parseInt(
+                                    columns[COLUMN_NUMBER_AIRPORT_ID_FROM]);
+                            int airportIDTo = Integer.parseInt(
+                                    columns[COLUMN_NUMBER_AIRPORT_ID_TO]);
+                            String delayTimeString = columns[COLUMN_DELAY_TIME];
+                            float delayTime;
+
+                            if(delayTimeString.equals(NULL_STR)){
+                                delayTime = FLOAT_ZERO;
+                            } else {
+                                delayTime = Float.parseFloat(delayTimeString);
+                            }
+
+                            float cancelled = Float.parseFloat(
+                                    columns[COLUMN_NUMBER_CANCALLED]);
+                            return new Tuple2<>(
+                                    new Tuple2<>(
+                                            airportIDFrom,
+                                            airportIDTo
+                                    ),
+                                    new FlightsSerializable(
+                                            airportIDFrom,
+                                            airportIDTo,
+                                            delayTime,
+                                            cancelled
+                                    )
+                            );
+                        }
+                );
     }
 }
