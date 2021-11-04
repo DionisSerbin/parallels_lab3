@@ -97,6 +97,8 @@ public class StatisticDelay  implements Serializable {
         String output = "\n Max delay: " + object.maxDelayed
     }
 
+    public static 
+
     @Override
     public String toString() {
         return
