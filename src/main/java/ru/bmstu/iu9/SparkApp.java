@@ -101,6 +101,31 @@ public class SparkApp {
                         }
                 );
 
-
+        JavaPairRDD<
+                Tuple2<
+                        Integer,
+                        Integer
+                        >,
+                String
+                > dataFlightsResult = dataFlights.
+                    combineByKey(
+                            p -> new StatisticDelay(
+                                    1,
+                                    p.getCancelled() == FLOAT_ONE ? 1 : 0,
+                                    p.getDelayTime() == FLOAT_ZERO ? 1 : 0,
+                                    p.getDelayTime()
+                                    ),
+                            (statisticDelay, p) -> StatisticDelay.addInStaticDelay(
+                                    statisticDelay,
+                                    p.getCancelled() == FLOAT_ONE,
+                                    p.getDelayTime() == FLOAT_ZERO,
+                                    p.getDelayTime(),
+                                    StatisticDelay::addStatistic
+                            )
+                    ).mapToPair(
+                            a -> new Tuple2<>(
+                                    a._1(),
+                                    StatisticDelay.outputString(a._2()))
+                            );
     }
 }
