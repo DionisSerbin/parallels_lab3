@@ -11,5 +11,10 @@ public class StatisticDelay  implements Serializable {
 
     public StatisticDelay(){}
 
-    public StatisticDelay(int countAllFlights, )
+    public StatisticDelay(int countAllFlights, int countCancelledFlights,
+                          int countDelayedFlights, float maxDelayed){
+
+        
+
+    }
 }
