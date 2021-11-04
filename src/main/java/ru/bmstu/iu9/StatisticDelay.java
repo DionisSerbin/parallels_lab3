@@ -97,7 +97,9 @@ public class StatisticDelay  implements Serializable {
         String output = "\n Max delay: " + object.maxDelayed
     }
 
-    public static 
+    public static float makePercent(float countFlights){
+        return countFlights / 
+    }
 
     @Override
     public String toString() {
