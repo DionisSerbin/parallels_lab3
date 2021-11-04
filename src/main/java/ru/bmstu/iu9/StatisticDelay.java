@@ -95,7 +95,9 @@ public class StatisticDelay  implements Serializable {
         float cancelledPercent = makePercent((float) object.countCancelledFlights,
                 (float) object.countAllFlights);
         String output = "\n Max delay: " + object.maxDelayed +
-                "\n"
+                "\n Cancelled flights: " + cancelledPercent +
+                "\n Delayed flights: " + delayedPercent;
+
     }
 
     public static float makePercent(float countThisFlights, float countAllFlights){
