@@ -26,7 +26,10 @@ public class SparkApp {
         JavaRDD<String> airportsFile = sc.
                 textFile("L_AIRPORT_ID.csv");
 
-        JavaPairRDD<Integer, String> dataAirport = airportsFile.
+        JavaPairRDD<
+                Integer,
+                String
+                > dataAirport = airportsFile.
                 filter(s -> !s.contains(CODE)).
                 mapToPair(s -> {
                             s = s.replace(QUOTE, NULL_STR);
@@ -39,10 +42,16 @@ public class SparkApp {
                             );
                         }
                 );
+
         final Broadcast<
                 Map<
                         Integer,
                         String
                         >
+                > broadcastedAirports = sc.broadcast(
+                                dataAirport.collectAsMap()
+        );
+
+
     }
 }
