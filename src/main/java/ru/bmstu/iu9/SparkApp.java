@@ -39,8 +39,10 @@ public class SparkApp {
                             );
                         }
                 );
-        final Broadcast
-                <Map<Integer, String
+        final Broadcast<
+                Map<
+                        Integer,
+                        String
                         >
     }
 }
