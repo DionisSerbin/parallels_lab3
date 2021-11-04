@@ -94,6 +94,7 @@ public class StatisticDelay  implements Serializable {
                 (float) object.countAllFlights * FLOAT_HUNDRED;
         float cancelledPercent = (float) object.countCancelledFlights /
                 (float) object.countAllFlights * FLOAT_HUNDRED;
+        String output = "\n" + 
     }
 
     @Override
