@@ -28,4 +28,39 @@ public class FlightsSerializable implements Serializable {
     public float getCancelled(){
         return cancelled;
     }
+
+    public int getAirportIDFrom(){
+        return getAirportIDFrom();
+    }
+
+    public int getAirportIDTo(){
+        return  airportIDTo;
+    }
+
+    public void setAirportIDFrom(int airportIDFrom){
+        this.airportIDFrom = airportIDFrom;
+    }
+
+    public void setAirportIDTo(int airportIDTo){
+        this.airportIDTo = airportIDTo;
+    }
+
+    public void setDelayTime(float delayTime){
+        this.delayTime = delayTime;
+    }
+
+    public void setCancelled(float cancelled ){
+        this.cancelled = cancelled;
+    }
+
+    @Override
+    public String toString(){
+        return
+                "FlightsSerializable{" +
+                        "airportIDFrom=" + airportIDFrom +
+                        ", airportIDTo" + airportIDTo +
+                        ", delayTime" + delayTime +
+                        ", cancelled" + cancelled +
+                        '}';
+    }
 }

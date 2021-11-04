@@ -52,6 +52,6 @@ public class SparkApp {
                                 dataAirport.collectAsMap()
         );
 
-
+        JavaPairRDD<>
     }
 }
