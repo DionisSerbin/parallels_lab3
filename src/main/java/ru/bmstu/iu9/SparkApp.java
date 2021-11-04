@@ -107,8 +107,8 @@ public class SparkApp {
                         Integer
                         >,
                 String
-                > flightDataResult = dataFlights
-                .combineByKey(
+                > dataFlightsResult = dataFlights.
+                combineByKey(
                         p -> new StatisticDelay(1,
                                 p.getCancelled() == FLOAT_ONE ? 1 : 0,
                                 p.getDelayTime() >  FLOAT_ZERO ? 1 : 0,
@@ -126,6 +126,21 @@ public class SparkApp {
                                 StatisticDelay.outputString(a._2())
                         )
                 );
-        dassafa;
+
+        JavaRDD<String> result = dataFlightsResult.
+                map(a -> {
+                    Map<Integer, String> airportsAllID = broadcastedAirports.value();
+                    Tuple2<Integer, Integer> key = a._1();
+                    String value = a._2();
+
+                    String airportNameFrom = airportsAllID.get(key._1());
+                    String airportNameTo = airportsAllID.get(key._2());
+
+                    return "From " + airportNameFrom +
+                            " -> " +
+                            airportNameTo + value;
+                });
+
+        result.saveAsTextFile("hdfs://localhost:9000/user/denisserbin/output");
     }
 }
