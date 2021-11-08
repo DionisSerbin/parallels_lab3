@@ -115,6 +115,26 @@ public class SparkApp {
 
     }
 
+    private static JavaRDD<String> toStringResult (
+            JavaPairRDD<Tuple2<Integer, Integer>, String> dataFlightsCombinedByKey,
+            final Broadcast<Map<Integer, String>> broadcastedAirports){
+
+        return dataFlightsCombinedByKey.
+                map(a -> {
+                    Map<Integer, String> airportsAllID = broadcastedAirports.value();
+                    Tuple2<Integer, Integer> key = a._1();
+                    String value = a._2();
+
+                    String airportNameFrom = airportsAllID.get(key._1());
+                    String airportNameTo = airportsAllID.get(key._2());
+
+                    return "From " + airportNameFrom +
+                            " -> " +
+                            airportNameTo + value;
+                });
+
+    }
+
     public static void main(String[] args){
 
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
@@ -154,19 +174,10 @@ public class SparkApp {
                 String
                 > dataFlightsCombinedByKey = combineDataByKey(dataFlights);
 
-        JavaRDD<String> result = dataFlightsCombinedByKey.
-                map(a -> {
-                    Map<Integer, String> airportsAllID = broadcastedAirports.value();
-                    Tuple2<Integer, Integer> key = a._1();
-                    String value = a._2();
-
-                    String airportNameFrom = airportsAllID.get(key._1());
-                    String airportNameTo = airportsAllID.get(key._2());
-
-                    return "From " + airportNameFrom +
-                            " -> " +
-                            airportNameTo + value;
-                });
+        JavaRDD<String> result = toStringResult(
+                dataFlightsCombinedByKey,
+                broadcastedAirports
+        );
 
         result.saveAsTextFile("hdfs://localhost:9000/user/denisserbin/output");
     }
