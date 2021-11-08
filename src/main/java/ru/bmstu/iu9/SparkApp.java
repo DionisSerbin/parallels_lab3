@@ -37,19 +37,8 @@ public class SparkApp {
 
     }
 
-    public static void main(String[] args){
-        
-        SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
-        JavaSparkContext sc = new JavaSparkContext(conf);
-
-        JavaRDD<String> flightsFile = readFlightsFromFiles(sc);
-
-        JavaRDD<String> airportsFile = readAirportsFromFiles(sc);
-
-        JavaPairRDD<
-                Integer,
-                String
-                > dataAirport = airportsFile.
+    private static JavaPairRDD<Integer, String> parseAirports (JavaRDD<String> airportsFile){
+        return airportsFile.
                 filter(s -> !s.contains(CODE_STR)).
                 mapToPair(s -> {
                             s = s.replace(QUOTE, NULL_STR);
@@ -62,6 +51,21 @@ public class SparkApp {
                             );
                         }
                 );
+    }
+
+    public static void main(String[] args){
+
+        SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
+        JavaSparkContext sc = new JavaSparkContext(conf);
+
+        JavaRDD<String> flightsFile = readFlightsFromFiles(sc);
+
+        JavaRDD<String> airportsFile = readAirportsFromFiles(sc);
+
+        JavaPairRDD<
+                Integer,
+                String
+                > dataAirport = parseAirports(airportsFile);
 
         final Broadcast<
                 Map<
