@@ -90,6 +90,31 @@ public class SparkApp {
                 );
     }
 
+    private static JavaPairRDD<Tuple2<Integer, Integer>, String> combineDataByKey(
+            JavaPairRDD<Tuple2<Integer, Integer>, FlightsSerializable> dataFlights){
+
+        return dataFlights.
+                combineByKey(
+                        p -> new StatisticDelay(1,
+                                p.getCancelled() == FLOAT_ONE ? 1 : 0,
+                                p.getDelayTime() >  FLOAT_ZERO ? 1 : 0,
+                                p.getDelayTime()),
+                        (statisticDelay,p) -> StatisticDelay.addInStaticDelay(
+                                statisticDelay,
+                                p.getCancelled() == FLOAT_ONE,
+                                p.getDelayTime() > FLOAT_ZERO,
+                                p.getDelayTime()
+                        ),
+                        StatisticDelay::addStatistic)
+                .mapToPair(
+                        a-> new Tuple2<>(
+                                a._1(),
+                                StatisticDelay.outputString(a._2())
+                        )
+                );
+
+    }
+
     public static void main(String[] args){
 
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
@@ -127,27 +152,9 @@ public class SparkApp {
                         Integer
                         >,
                 String
-                > dataFlightsResult = dataFlights.
-                combineByKey(
-                        p -> new StatisticDelay(1,
-                                p.getCancelled() == FLOAT_ONE ? 1 : 0,
-                                p.getDelayTime() >  FLOAT_ZERO ? 1 : 0,
-                                p.getDelayTime()),
-                        (statisticDelay,p) -> StatisticDelay.addInStaticDelay(
-                                statisticDelay,
-                                p.getCancelled()==FLOAT_ONE,
-                                p.getDelayTime()>FLOAT_ZERO,
-                                p.getDelayTime()
-                        ),
-                        StatisticDelay::addStatistic)
-                .mapToPair(
-                        a-> new Tuple2<>(
-                                a._1(),
-                                StatisticDelay.outputString(a._2())
-                        )
-                );
+                > dataFlightsCombinedByKey = combineDataByKey(dataFlights);
 
-        JavaRDD<String> result = dataFlightsResult.
+        JavaRDD<String> result = dataFlightsCombinedByKey.
                 map(a -> {
                     Map<Integer, String> airportsAllID = broadcastedAirports.value();
                     Tuple2<Integer, Integer> key = a._1();
