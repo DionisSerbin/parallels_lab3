@@ -107,15 +107,5 @@ public class StatisticDelay  implements Serializable {
     public static float makePercent(float countThisFlights, float countAllFlights){
         return countThisFlights / countAllFlights * FLOAT_HUNDRED;
     }
-
-    @Override
-    public String toString() {
-        return
-                "StatisticDelay{" +
-                        "countAllFlights=" + countAllFlights +
-                        ", countCancelledFlights=" + countCancelledFlights +
-                        ", countDelayedFlights=" + countDelayedFlights +
-                        ", maxDelayed=" + maxDelayed +
-                        '}';
-    }
+    
 }

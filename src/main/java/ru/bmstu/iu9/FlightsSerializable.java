@@ -53,14 +53,4 @@ public class FlightsSerializable implements Serializable {
         this.cancelled = cancelled;
     }
 
-    @Override
-    public String toString(){
-        return
-                "FlightsSerializable{" +
-                        "airportIDFrom=" + airportIDFrom +
-                        ", airportIDTo" + airportIDTo +
-                        ", delayTime" + delayTime +
-                        ", cancelled" + cancelled +
-                        '}';
-    }
 }
