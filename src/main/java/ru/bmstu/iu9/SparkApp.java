@@ -25,6 +25,8 @@ public class SparkApp {
     private static final float FLOAT_ZERO = 0.0f;
     private static final float FLOAT_ONE = 1.0f;
 
+    
+
     public static void main(String[] args){
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
         JavaSparkContext sc = new JavaSparkContext(conf);
