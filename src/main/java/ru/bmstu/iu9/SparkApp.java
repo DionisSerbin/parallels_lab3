@@ -53,36 +53,9 @@ public class SparkApp {
                 );
     }
 
-    public static void main(String[] args){
-
-        SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
-        JavaSparkContext sc = new JavaSparkContext(conf);
-
-        JavaRDD<String> flightsFile = readFlightsFromFiles(sc);
-
-        JavaRDD<String> airportsFile = readAirportsFromFiles(sc);
-
-        JavaPairRDD<
-                Integer,
-                String
-                > dataAirport = parseAirports(airportsFile);
-
-        final Broadcast<
-                Map<
-                        Integer,
-                        String
-                        >
-                > broadcastedAirports = sc.broadcast(
-                                dataAirport.collectAsMap()
-        );
-
-        JavaPairRDD<
-                Tuple2<
-                        Integer,
-                        Integer
-                        >,
-                FlightsSerializable
-                > dataFlights = flightsFile.
+    private static JavaPairRDD<Tuple2<Integer, Integer>, FlightsSerializable> parseFlights(
+            JavaRDD<String> flightsFile){
+        return flightsFile.
                 filter(s -> !s.contains(YEAR_STR)).
                 mapToPair(s -> {
                             String[] columns = s.split(COMMA);
@@ -115,6 +88,38 @@ public class SparkApp {
                             );
                         }
                 );
+    }
+
+    public static void main(String[] args){
+
+        SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
+        JavaSparkContext sc = new JavaSparkContext(conf);
+
+        JavaRDD<String> flightsFile = readFlightsFromFiles(sc);
+
+        JavaRDD<String> airportsFile = readAirportsFromFiles(sc);
+
+        JavaPairRDD<
+                Integer,
+                String
+                > dataAirport = parseAirports(airportsFile);
+
+        final Broadcast<
+                Map<
+                        Integer,
+                        String
+                        >
+                > broadcastedAirports = sc.broadcast(
+                                dataAirport.collectAsMap()
+        );
+
+        JavaPairRDD<
+                Tuple2<
+                        Integer,
+                        Integer
+                        >,
+                FlightsSerializable
+                > dataFlights = parseFlights(flightsFile);
 
         JavaPairRDD<
                 Tuple2<
