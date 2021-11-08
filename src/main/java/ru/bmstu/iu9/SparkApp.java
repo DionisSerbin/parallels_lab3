@@ -25,7 +25,10 @@ public class SparkApp {
     private static final float FLOAT_ZERO = 0.0f;
     private static final float FLOAT_ONE = 1.0f;
 
-    private static 
+    private static void readFiles(JavaSparkContext sc, JavaRDD<String> flightsFile,
+                                  JavaRDD<String> airportsFile){
+
+    }
 
     public static void main(String[] args){
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
