@@ -25,23 +25,25 @@ public class SparkApp {
     private static final float FLOAT_ZERO = 0.0f;
     private static final float FLOAT_ONE = 1.0f;
 
-    private static void readFromFiles(JavaSparkContext sc, JavaRDD<String> flightsFile,
-                                  JavaRDD<String> airportsFile){
-        flightsFile = sc.
-                textFile(FLIGHTS_FILE);;
-        airportsFile = sc.
+    private static JavaRDD<String> readFlightsFromFiles(JavaSparkContext sc){
+        return sc.
+                textFile(FLIGHTS_FILE);
+
+    }
+
+    private static JavaRDD<String> readAirportsFromFiles(JavaSparkContext sc){
+        return sc.
                 textFile(AIRPORTS_FILE);
+
     }
 
     public static void main(String[] args){
         SparkConf conf = new SparkConf().setAppName("lab3 Spark App");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> flightsFile = new JavaRDD<>();
+        JavaRDD<String> flightsFile = readFlightsFromFiles(sc);
 
-        JavaRDD<String> airportsFile;
-
-        readFromFiles(sc, flightsFile, airportsFile);
+        JavaRDD<String> airportsFile = readAirportsFromFiles(sc);
 
         JavaPairRDD<
                 Integer,
