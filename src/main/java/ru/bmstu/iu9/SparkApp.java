@@ -130,7 +130,7 @@ public class SparkApp {
 
                     return "From " + airportNameFrom +
                             " -> " +
-                            "To" + airportNameTo +
+                            "To " + airportNameTo +
                             ":" + value;
                 });
 
